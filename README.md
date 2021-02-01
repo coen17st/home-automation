@@ -7,7 +7,6 @@ Home automation tools on CENTOS 7
     sudo yum –y install openssh-server openssh-clients \
     sudo systemctl enable sshd \
     sudo systemctl start sshd \
-    reboot    
 
 ### Intall Docker
     sudo yum remove docker \
@@ -46,8 +45,6 @@ Home automation tools on CENTOS 7
     firewall-cmd --reload    
 
 ### Home Assistant
-
-    git clone https://github.com/coen17st/home-assistant.git && cd home-assistant
 
     docker build -t home-assistant .
 

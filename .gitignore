@@ -8,6 +8,7 @@
 !.HA_VERSION
 !docker-compose.yml
 !Dockerfile
+!installation.sh
 # Ignore folders.
 .cloud
 .ssh
