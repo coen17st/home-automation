@@ -46,7 +46,7 @@ services:
     ports:
       - 3306:3306
     networks:
-      - home-network
+      - home-automation
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
@@ -61,7 +61,7 @@ services:
     environment:
       TZ: Europe/Amsterdam
     networks:
-      - home-network
+      - home-automation
     healthcheck:
       test: wget http://adminer:8080 --no-check-certificate -q -O - > /dev/null 2>&1
       interval: 1m30s
@@ -79,6 +79,6 @@ volumes:
 # NETWORKS
 
 networks:
-  home-network:
-    name: home-network
+  home-automation:
+    name: home-automation
     driver: bridge
