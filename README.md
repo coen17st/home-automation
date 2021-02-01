@@ -3,13 +3,13 @@ Home automation tools on CENTOS 7
 
 ### Server installation
 
-### INSTALL OPEN SSH
+### Install open SSH
     sudo yum –y install openssh-server openssh-clients \
     sudo systemctl enable sshd \
     sudo systemctl start sshd \
     reboot    
 
-### INSTALL DOCKER
+### Intall Docker
     sudo yum remove docker \
     docker-client \
     docker-client-latest \
@@ -34,14 +34,18 @@ Home automation tools on CENTOS 7
 
     sudo usermod -aG docker $USER
 
-# INSTALL DOCKER COMPOSE
+### Install docker-compose
     sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
     sudo chmod +x /usr/local/bin/docker-compose
 
     docker-compose --version
+    
+### Open firewall ports for Home Assistant
+    firewall-cmd --permanent --add-port=8123/tcp && firewall-cmd --permanent --add-port=5353/udp 
+    firewall-cmd --reload    
 
-### HOME ASSISTANT
+### Home Assistant
 
     git clone https://github.com/coen17st/home-assistant.git && cd home-assistant
 
@@ -49,8 +53,6 @@ Home automation tools on CENTOS 7
 
     docker-compose up -d
 
-### OPEN PORTS FOR HOME ASSISTANT
-    firewall-cmd --permanent --add-port=8123/tcp && firewall-cmd --permanent --add-port=5353/udp 
-    firewall-cmd --reload        
+    
 
 
