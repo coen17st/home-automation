@@ -1,5 +1,5 @@
-# home-automation
-Home Automation Applications on CENTOS 7
+# Home Automation Tools
+Home automation tools on CENTOS 7
 
 ### Server installation
 
