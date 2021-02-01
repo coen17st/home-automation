@@ -10,14 +10,14 @@ sudo systemctl start sshd \
 reboot 
 
 ### INSTALL DOCKER
-sudo yum remove docker \
+`<sudo yum remove docker \
 docker-client \
 docker-client-latest \
 docker-common \
 docker-latest \
 docker-latest-logrotate \
 docker-logrotate \
-docker-engine 
+docker-engine >`
 
 sudo yum install -y yum-utils 
 
