@@ -1,0 +1,25 @@
+# An * ensures that everything will be ignored.
+*
+# You can whitelist files/folders with !, these will not be ignored.
+!*/
+!*.yaml
+!.gitignore
+!*.md
+!.HA_VERSION
+
+# Ignore folders.
+.cloud
+.ssh
+.storage
+
+
+# Ignore files. 
+.google.token
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+google_calendars.yaml
+Home Assistant-*.json
+zones.yaml
+webostv.conf
+.env
