@@ -1,14 +1,16 @@
 # An * ensures that everything will be ignored.
-*
+
 # You can whitelist files/folders with !, these will not be ignored.
+!.gitignore
 !*/
 !*.yaml
-!.gitignore
+!*.conf
 !*.md
 !.HA_VERSION
 !docker-compose.yml
 !Dockerfile
 !installation.sh
+
 # Ignore folders.
 .cloud
 .ssh
@@ -25,3 +27,4 @@ Home Assistant-*.json
 zones.yaml
 webostv.conf
 .env
+*.log

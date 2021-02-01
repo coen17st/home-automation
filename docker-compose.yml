@@ -1,18 +1,6 @@
 version: '3.1'
 services:
 
-  portainer:
-    image: portainer/portainer-ce
-    container_name: portainer
-    command: -H unix:///var/run/docker.sock
-    restart: always
-    ports:
-      - 9000:9000
-      - 8000:8000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-
   homeassistant:
     image: home-assistant:latest
     container_name: home-assistant
@@ -56,10 +44,10 @@ services:
     image: adminer
     container_name: adminer
     restart: always
-    ports:
-      - 8080:8080
     environment:
       TZ: Europe/Amsterdam
+    ports:
+      - 8080:8080
     networks:
       - home-automation
     healthcheck:
@@ -68,6 +56,20 @@ services:
       timeout: 10s
       retries: 3
 
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    restart: always
+    volumes:
+      - ./mosquitto/config/:/mosquitto/config/
+      - ./mosquitto/log:/mosquitto/log
+      - mosquitto_data:/mosquitto/data
+    ports:
+      - 1883:1883
+      - 9001:9001
+    networks:
+      - home-automation
+
 # VOLUMES
 
 volumes:
@@ -75,6 +77,8 @@ volumes:
     name: mariadb_data
   portainer_data:
     name: portainer_data
+  mosquitto_data:
+    name: mosquitto_data
 
 # NETWORKS
 
