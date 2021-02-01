@@ -4,10 +4,10 @@ Home Automation Applications on CENTOS 7
 ### Server installation
 
 ### INSTALL OPEN SSH
-sudo yum –y install openssh-server openssh-clients \
+```sudo yum –y install openssh-server openssh-clients \
 sudo systemctl enable sshd \
 sudo systemctl start sshd \
-reboot 
+reboot```
 
 ### INSTALL DOCKER
 `<sudo yum remove docker \
