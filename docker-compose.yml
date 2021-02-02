@@ -3,7 +3,7 @@ services:
 
   homeassistant:
     image: home-assistant:latest
-    container_name: home-assistant
+    container_name: prd-home-assistant
     depends_on:
       mariadb:
         condition: service_healthy
@@ -20,11 +20,11 @@ services:
       retries: 3
 
   mariadb:
-    image: mariadb
-    container_name: mariadb
+    image: mariadb:latest
+    container_name: prd-mariadb
     restart: always
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - prd-mariadb_data:/var/lib/mysql
     environment:
       TZ: Europe/Amsterdam
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
@@ -41,8 +41,8 @@ services:
       retries: 10
 
   adminer:
-    image: adminer
-    container_name: adminer
+    image: adminer:latest
+    container_name: prd-adminer
     restart: always
     environment:
       TZ: Europe/Amsterdam
@@ -57,13 +57,13 @@ services:
       retries: 3
 
   mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:latest
+    container_name: prd-mosquitto
     restart: always
     volumes:
       - ./mosquitto/config/:/mosquitto/config/
       - ./mosquitto/log:/mosquitto/log
-      - mosquitto_data:/mosquitto/data
+      - prd-mosquitto_data:/mosquitto/data
     ports:
       - 1883:1883
       - 9001:9001
@@ -73,12 +73,10 @@ services:
 # VOLUMES
 
 volumes:
-  mariadb_data:
-    name: mariadb_data
-  portainer_data:
-    name: portainer_data
-  mosquitto_data:
-    name: mosquitto_data
+  prd-mariadb_data:
+    name: prd-mariadb_data
+  prd-mosquitto_data:
+    name: prd-mosquitto_data
 
 # NETWORKS
 

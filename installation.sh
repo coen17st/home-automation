@@ -52,7 +52,7 @@ firewall-cmd --permanent --add-port=8123/tcp \
 echo "Building Home Assistant docker image"
 sleep 5
 cd home-assistant
-docker build -t home-assistant .
+docker build -t prd-home-assistant .
 cd ..
 
 ### Run Docker-compose
