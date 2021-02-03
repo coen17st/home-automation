@@ -50,11 +50,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
     
 ### Home Assistant
-#echo "Building Home Assistant docker image"
-#sleep 5
-#cd home-assistant
-#docker build -t prd-home-assistant .
-#cd ..
+echo "Building Home Assistant docker image"
+sleep 5
+cd home-assistant
+docker build -t prd-home-assistant .
+cd ..
 
 ### Run Docker-compose
 #docker-compose up -d

@@ -2,7 +2,7 @@ version: '3.1'
 services:
 
   homeassistant:
-    image: home-assistant:latest
+    image: prd-home-assistant:latest
     container_name: prd-home-assistant
     depends_on:
       mariadb:

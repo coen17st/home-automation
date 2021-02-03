@@ -1,30 +1,31 @@
-# An * ensures that everything will be ignored.
-
-# You can whitelist files/folders with !, these will not be ignored.
-!.gitignore
-!*/
-!*.yaml
-!*.conf
-!*.md
-!.HA_VERSION
-!docker-compose.yml
-!Dockerfile
-!installation.sh
-
-# Ignore folders.
-.cloud
-.ssh
-.storage
-
-
-# Ignore files. 
-.google.token
-ip_bans.yaml
-secrets.yaml
-known_devices.yaml
-google_calendars.yaml
-Home Assistant-*.json
-zones.yaml
-webostv.conf
-.env
+# Generic ignores
+*.env
 *.log
+*.pyc
+._*
+__pycache__
+
+# Directory (contents) ignores
+.cloud
+.storage
+deps
+
+# Specific file ignores
+.uuid
+html5_push_registrations.conf
+image
+ip_bans.yaml
+known_devices.yaml
+options.xml
+OZW_Log.txt
+secrets.yaml
+zwcfg_*
+zwscene.xml
+
+# Ignore files created by IDE's
+.vscode
+.theia
+.Trash*
+
+# Specific keeps
+!.gitkeep
