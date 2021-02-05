@@ -12,7 +12,10 @@ services:
       - ./home-assistant/config:/config
     environment:
       - TZ=Europe/Amsterdam
-    network_mode: host
+    ports:
+      - 8123:8123
+    networks:
+      - home-automation
     healthcheck:
       test: wget http://homeassistant:8123 --no-check-certificate -q -O - > /dev/null 2>&1
       interval: 1m30s

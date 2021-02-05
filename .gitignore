@@ -1,9 +1,6 @@
 # Generic ignores
 *.env
 *.log
-*.pyc
-._*
-__pycache__
 
 # Directory (contents) ignores
 .cloud
@@ -11,21 +8,11 @@ __pycache__
 deps
 
 # Specific file ignores
-.uuid
-html5_push_registrations.conf
-image
+secrets.yaml
 ip_bans.yaml
 known_devices.yaml
+.uuid
 options.xml
 OZW_Log.txt
-secrets.yaml
 zwcfg_*
 zwscene.xml
-
-# Ignore files created by IDE's
-.vscode
-.theia
-.Trash*
-
-# Specific keeps
-!.gitkeep
