@@ -80,6 +80,7 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: prd-nginx-proxy
+    restart: unless-stopped
     environment:
       TZ: Europe/Amsterdam
     ports:
@@ -88,7 +89,6 @@ services:
     volumes:
       - ./nginx-proxy/etc/nginx/vhost.d:/etc/nginx/vhost.d
       - ./nginx-proxy/etc/nginx/certs:/etc/nginx/certs
-      - ./nginx-proxy/usr/share/nginx/html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - prd-nginx_data:/etc/nginx/dhparam
     networks:
@@ -97,6 +97,7 @@ services:
   ssl-generator:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: prd-ssl-generator
+    restart: unless-stopped
     environment:
       TZ: Europe/Amsterdam
     volumes_from:
@@ -105,20 +106,74 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - home-automation
+
+  plex:
+    image: plexinc/pms-docker
+    container_name: prd-plex
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Amsterdam  
+      PLEX_CLAIM: "${PLEX_CLAIMTOKEN}"
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    networks:
+      - home-automation
+    volumes:
+      - ./plex/database:/config
+      - ./plex/transcode/temp:/transcode
+      - ./plex/media:/data
+
+  omada-controller:
+    image: mbentley/omada-controller:3.2
+    container_name: prd-omada-controller
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      TZ: Europe/Amsterdam  
+      MANAGE_HTTP_PORT: 8088
+      MANAGE_HTTPS_PORT: 8043
+      PORTAL_HTTP_PORT: 8088
+      PORTAL_HTTPS_PORT: 8843
+      SHOW_SERVER_LOGS: true
+      SHOW_MONGODB_LOGS: false
+      SSL_CERT_NAME: "tls.crt"
+      SSL_KEY_NAME: "tls.key" 
+    volumes:
+      - prd-omada-controller_data:/opt/tplink/EAPController/data
+      - prd-omada-controller_work:/opt/tplink/EAPController/work
+      - prd-omada-controller_logs:/opt/tplink/EAPController/logs
         
 # VOLUMES
-
 volumes:
+
   prd-mariadb_data:
     name: prd-mariadb_data
+  
   prd-mosquitto_data:
     name: prd-mosquitto_data
+  
   prd-nginx_data:
     name: prd-nginx_data
 
-# NETWORKS
+  prd-omada-controller_data:
+    name: prd-omada-controller_data
+  prd-omada-controller_work:
+    name: prd-omada-controller_work
+  prd-omada-controller_data:
+    name: prd-omada-controller_logs
 
+
+# NETWORKS
 networks:
+
   home-automation:
     name: home-automation
     driver: bridge
