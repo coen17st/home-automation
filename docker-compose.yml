@@ -11,7 +11,9 @@ services:
     volumes:
       - ./home-assistant/config:/config
     environment:
-      - TZ=Europe/Amsterdam
+      TZ: Europe/Amsterdam
+      LETSENCRYPT_HOST: homeassistant.theautomation.nl
+      VIRTUAL_HOST: homeassistant.theautomation.nl
     ports:
       - 8123:8123
     networks:
@@ -63,6 +65,8 @@ services:
     image: eclipse-mosquitto:latest
     container_name: prd-mosquitto
     restart: always
+    environment:
+      TZ: Europe/Amsterdam
     volumes:
       - ./mosquitto/config/:/mosquitto/config/
       - ./mosquitto/log:/mosquitto/log
@@ -73,6 +77,35 @@ services:
     networks:
       - home-automation
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: prd-nginx-proxy
+    environment:
+      TZ: Europe/Amsterdam
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-proxy/etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - ./nginx-proxy/etc/nginx/certs:/etc/nginx/certs
+      - ./nginx-proxy/usr/share/nginx/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - prd-nginx_data:/etc/nginx/dhparam
+    networks:
+      - home-automation
+ 
+  ssl-generator:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: prd-ssl-generator
+    environment:
+      TZ: Europe/Amsterdam
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - home-automation
+        
 # VOLUMES
 
 volumes:
@@ -80,6 +113,8 @@ volumes:
     name: prd-mariadb_data
   prd-mosquitto_data:
     name: prd-mosquitto_data
+  prd-nginx_data:
+    name: prd-nginx_data
 
 # NETWORKS
 

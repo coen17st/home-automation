@@ -1,13 +1,18 @@
-# Generic ignores
-*.env
-*.log
+# Directory (contents) allow
+
 
 # Directory (contents) ignores
 .cloud
 .storage
 deps
+nginx-proxy/*
+
+# Ignore files
+*.log
+
 
 # Specific file ignores
+.env
 secrets.yaml
 ip_bans.yaml
 known_devices.yaml
