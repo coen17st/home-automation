@@ -6,6 +6,10 @@
 !*.yaml
 !.gitignore
 !*.txt
+!*.sh
+!Dockerfile
+
+!/omada-controller/**
 
 # Allow specific
 !Preferences.xml

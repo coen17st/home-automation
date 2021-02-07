@@ -131,26 +131,7 @@ services:
       - ./plex/transcode/temp:/transcode
       - ./plex/media:/data
 
-  omada-controller:
-    image: mbentley/omada-controller:3.2
-    container_name: prd-omada-controller
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      TZ: Europe/Amsterdam  
-      MANAGE_HTTP_PORT: 8088
-      MANAGE_HTTPS_PORT: 8043
-      PORTAL_HTTP_PORT: 8088
-      PORTAL_HTTPS_PORT: 8843
-      SHOW_SERVER_LOGS: true
-      SHOW_MONGODB_LOGS: false
-      SSL_CERT_NAME: "tls.crt"
-      SSL_KEY_NAME: "tls.key" 
-    volumes:
-      - prd-omada-controller_data:/opt/tplink/EAPController/data
-      - prd-omada-controller_work:/opt/tplink/EAPController/work
-      - prd-omada-controller_logs:/opt/tplink/EAPController/logs
-        
+       
 # VOLUMES
 volumes:
 
@@ -162,14 +143,6 @@ volumes:
   
   prd-nginx_data:
     name: prd-nginx_data
-
-  prd-omada-controller_data:
-    name: prd-omada-controller_data
-  prd-omada-controller_work:
-    name: prd-omada-controller_work
-  prd-omada-controller_data:
-    name: prd-omada-controller_logs
-
 
 # NETWORKS
 networks:
