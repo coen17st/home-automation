@@ -1,6 +1,9 @@
 #!/bin/bash
 # Server installation
-# Home automation tools on CENTOS 7
+
+# Make Docker Directory
+mkdir ${HOME}/docker 2>/dev/null
+cd ${HOME}/docker
 
 ### Install open SSH
 echo "Installing Open SSH-Server"
@@ -10,6 +13,15 @@ sudo yum –y install openssh-server openssh-clients \
 && sudo systemctl enable sshd \
 && sudo systemctl start sshd
 
+if [ -x "$(command -v docker)" ]; then
+    echo "Update docker"
+    sleep 5
+    sudo yum update
+    # remove the old
+    sudo yum lxc-docker*
+    # install the new
+    sudo yum docker-engine
+else
 ### Intall Docker
 echo "Installing Docker"
 sleep 5
@@ -32,28 +44,30 @@ sudo systemctl enable docker
 sudo groupadd docker 
 sudo usermod -aG docker $USER
 
+fi
+
 ### Install docker-compose
-echo "Installing Docker-Compose"
-sleep 5
+#echo "Installing Docker-Compose"
+#sleep 5
 
-sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-docker-compose --version
+#sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo chmod +x /usr/local/bin/docker-compose
+#docker-compose --version
     
-### Open firewall ports for Home Assistant
-echo "Open Firewall ports"
-sleep 5
+#### Open firewall ports for Home Assistant
+#echo "Open Firewall ports"
+#sleep 5
 
-firewall-cmd --permanent --add-port=8123/tcp \
-&& firewall-cmd --permanent --add-port=5353/udp \
-&& firewall-cmd --reload    
+#firewall-cmd --permanent --add-port=8123/tcp \
+#&& firewall-cmd --permanent --add-port=5353/udp \
+#&& firewall-cmd --reload    
 
 ### Home Assistant
-echo "Building Home Assistant docker image"
-sleep 5
-cd home-assistant
-docker build -t prd-home-assistant .
-cd ..
+#echo "Building Home Assistant docker image"
+#sleep 5
+#cd home-assistant
+#docker build -t prd-home-assistant .
+#cd ..
 
 ### Run Docker-compose
-docker-compose up -d
+#docker-compose up -d
