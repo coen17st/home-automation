@@ -1,15 +1,15 @@
 #!/bin/bash
 
 ## change the variables below to your needs
-
+# this is the directory where the repositorys will be cloned
 base_dir="${HOME}/docker/"
-home_automation_tools_repository="https://github.com/coen17st/home-automation-tools.git"
-home_automation_tools_dir="${HOME}/docker/home-automation-tools"
-home_assistant_config_repository="https://github.com/coen17st/home-assistant-config.git"
-home_assistant_config_dir="${HOME}/docker/home-assistant-config"
 
 ## don't change anything below #####################################################
 
+home_automation_tools_repository="https://github.com/coen17st/home-automation-tools.git"
+home_automation_tools_dir="${base_dir}/home-automation-tools"
+home_assistant_config_repository="https://github.com/coen17st/home-assistant-config.git"
+home_assistant_config_dir="${base_dir}/home-assistant-config"
 sleepseconds="2"
 ip4=$(hostname -I | cut -d' ' -f1)
 date=`date '+%Y-%m-%d %H:%M:%S'`
