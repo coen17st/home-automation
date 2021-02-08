@@ -4,6 +4,7 @@
 
 # Allow type
 !*.yaml
+!*.yml
 !.gitignore
 !*.txt
 !*.sh
