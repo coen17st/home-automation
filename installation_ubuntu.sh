@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## change the variables below to your needs (optional)
-base_dir="${HOME}/docker/"
+base_dir="${HOME}/docker"
 
 ## don't change anything below #####################################################
 home_automation_tools_repository="https://github.com/coen17st/home-automation-tools.git"
@@ -49,34 +49,37 @@ EOF
 mkdir ${base_dir} 2>/dev/null
 
 # update and upgrade system
-printf "${color_green}Update system\n\n${color_no}"
+printf "${color_green}Update system\n${color_no}"
 
 sleep ${sleepseconds}
 sudo apt update -y
 sudo apt upgrade -y
+printf "\n"
 
 # pull or clone home assistant from github
-if cd ${home_assistant_config_dir}/.git
+if cd ${home_assistant_config_dir}/.git 2>/dev/null
 then 
-printf "${color_green}Updating Home Assistant Config repository\n\n${color_no}"
+printf "${color_green}Updating Home Assistant Config repository\n${color_no}"
 cd ${home_assistant_config_dir} \
 && git config pull.rebase false
 else 
-printf "${color_green}Home Assistant Config repository not found, downloading it now\n\n${color_no}"
+printf "${color_green}Home Assistant Config repository not found, downloading it now\n${color_no}"
 cd ${HOME}/docker/ \
 && git clone ${home_assistant_config_repository}
+printf "\n\n"
 fi
 
 # pull or clone home automation tools from github
-if cd ${home_automation_tools_dir}/.git
+if cd ${home_automation_tools_dir}/.git 2>/dev/null
 then 
-printf "${color_green}Updating Home Automation Tools repository\n\n${color_no}"
+printf "${color_green}Updating Home Automation Tools repository\n${color_no}"
 cd ${home_automation_tools_dir} \
 && git config pull.rebase false
 else 
-printf "${color_green}Home Automation Tools repository not found, downloading it now\n\n${color_no}"
+printf "${color_green}Home Automation Tools repository not found, downloading it now\n${color_no}"
 cd ${HOME}/docker/ \
 && git clone ${home_automation_tools_repository}
+printf "\n\n"
 fi
 
 # create default .env file for home automation tools, this file will be used in docker-compose
@@ -92,8 +95,8 @@ MYSQL_DATABASE=
 ### PLEX ###
 PLEX_CLAIMTOKEN=
 EOF
-
 fi
+
 # ask variables - mysql user
 if grep -qFx "MYSQL_USER=" ${home_automation_tools_dir}/.env
 then
@@ -141,11 +144,12 @@ sleep ${sleepseconds}
 sudo apt install docker.io -y
 
 # launch docker
-sudo systemctl enable --now docker
+sudo systemctl enable docker
 
 # set user prevlileges
-sudo groupadd docker 2>/dev/null
+sudo groupadd docker
 sudo usermod -aG docker ${USER}
+su ${USER}
 
 # check docker version
 docker --version
