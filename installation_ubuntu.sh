@@ -144,7 +144,7 @@ sleep ${sleepseconds}
 sudo apt install docker.io -y
 
 # launch docker
-sudo systemctl enable docker
+sudo systemctl enable --now docker
 
 # set user prevlileges
 sudo groupadd docker
