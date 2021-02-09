@@ -64,7 +64,7 @@ cd ${home_assistant_config_dir} \
 && git config pull.rebase false
 else 
 printf "${color_green}Home Assistant Config repository not found, downloading it now\n${color_no}"
-cd ${HOME}/docker/ \
+cd ${base_dir} \
 && git clone ${home_assistant_config_repository}
 printf "\n\n"
 fi
@@ -77,10 +77,11 @@ cd ${home_automation_tools_dir} \
 && git config pull.rebase false
 else 
 printf "${color_green}Home Automation Tools repository not found, downloading it now\n${color_no}"
-cd ${HOME}/docker/ \
+cd ${base_dir} \
 && git clone ${home_automation_tools_repository}
 printf "\n\n"
 fi
+printf "\n"
 
 # create default .env file for home automation tools, this file will be used in docker-compose
 if [ ! -f "${home_automation_tools_dir}/.env" ]; 
@@ -130,40 +131,52 @@ fi
 # ask variables - plex claim token
 if grep -qFx "PLEX_CLAIMTOKEN=" ${home_automation_tools_dir}/.env
 then
-printf "${color_green}You can obtain a claim token to login your server to your plex account by visiting https://www.plex.tv/claim${color_no}"
-printf "${color_green}enter your PLEX CLAIMTOKEN:${color_no}"
+printf "${color_green}Enter your Plex Claimtoken, you can obtain a claim token to login your server to your plex account by visiting https://www.plex.tv/claim ${color_no}"
+printf "${color_green}\nPLEX CLAIMTOKEN:${color_no}"
 read plex_claimtoken
 sudo sed -i "s/PLEX_CLAIMTOKEN=/PLEX_CLAIMTOKEN=$plex_claimtoken/" ${home_automation_tools_dir}/.env
+printf "\n"
 fi
 
-## INSTALL DOCKER
-
+# check if docker is installed
+docker --version 2>&1 >/dev/null
+if [ $? -ne 0 ]
+then
 # download and install docker
 printf "${color_green}Install docker\n\n${color_no}"
-sleep ${sleepseconds}
+sleep ${sleepseconds}./
 sudo apt install docker.io -y
-
 # launch docker
 sudo systemctl enable --now docker
-
 # set user prevlileges
 sudo groupadd docker
 sudo usermod -aG docker ${USER}
 su ${USER}
-
 # check docker version
 docker --version
+else
+dockerversion=$(docker --version)
+printf "${color_green}${dockerversion} is installed\n\n${color_no}"
+fi
 
+# check if docker-compose is installad
+docker-compose --version 2>&1 >/dev/null
+if [ $? -ne 0 ]
+then
 # install docker-compose
 printf "${color_green}Installing Docker Compose\n\n${color_no}"
 sleep ${sleepseconds}
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+else
+dockercomposeversion=$(docker-compose --version)
+printf "${color_green}${dockercomposeversion} is installed\n\n${color_no}"
+fi
 
 # build and start up portainer docker container
 cd ${home_automation_tools_dir} \
-&& docker-compose -f docker-compose-portainer.yml up -d
+&& docker-compose -f docker-compose-portainer.yml up -d 
     if [ $? -ne 0 ]
     then
     printf "${color_green}failed to bring up Portainer\n\n${color_no}"
