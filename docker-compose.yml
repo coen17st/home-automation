@@ -1,6 +1,18 @@
 version: '3.1'
 services:
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: prd-portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - 9000:9000
+      - 8000:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - prd-portainer_data:/data
+
   homeassistant:
     image: prd-home-assistant:latest
     container_name: prd-home-assistant
@@ -135,6 +147,9 @@ services:
 # VOLUMES
 volumes:
 
+  prd-portainer_data:
+    name: prd-portainer_data
+
   prd-mariadb_data:
     name: prd-mariadb_data
   
@@ -143,6 +158,7 @@ volumes:
   
   prd-nginx_data:
     name: prd-nginx_data
+
 
 # NETWORKS
 networks:
