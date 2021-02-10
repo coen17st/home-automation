@@ -1,9 +1,9 @@
 #!/bin/bash
 
-## change the variables below to your needs (optional)
+# CHANGE THE VARIABLES BELOW TO YOUR NEEDS (OPTIONAL)
 base_dir="${HOME}/docker"
 
-## don't change anything below #####################################################
+# DON'T CHANGE ANYTHING BELOW
 home_automation_tools_repository="https://github.com/coen17st/home-automation-tools.git"
 home_automation_tools_dir="${base_dir}/home-automation-tools"
 home_assistant_config_repository="https://github.com/coen17st/home-assistant-config.git"
@@ -45,18 +45,19 @@ and the following images on Docker
 =============================================================================================================
 EOF
 
-# make docker directory in home folder
+# MAKE DOCKER DIRECTORY IN HOME FOLDER
 mkdir ${base_dir} 2>/dev/null
 
-# update and upgrade system
-printf "${color_green}Update system\n${color_no}"
 
+# UPDATE AND UPGRADE SYSTEM
+printf "${color_green}Update system\n${color_no}"
 sleep ${sleepseconds}
-sudo apt update -y
-sudo apt upgrade -y
+sudo apt update -y \
+&& sudo apt upgrade -y
 printf "\n"
 
-# pull or clone home assistant from github
+
+# PULL OR CLONE HOME ASSISTANT FROM GITHUB
 if cd ${home_assistant_config_dir}/.git 2>/dev/null
 then 
 printf "${color_green}Updating Home Assistant Config repository\n${color_no}"
@@ -69,7 +70,8 @@ cd ${base_dir} \
 printf "\n\n"
 fi
 
-# pull or clone home automation tools from github
+
+# PULL OR CLONE HOME AUTOMATION TOOLS FROM GITHUB
 if cd ${home_automation_tools_dir}/.git 2>/dev/null
 then 
 printf "${color_green}Updating Home Automation Tools repository\n${color_no}"
@@ -83,7 +85,8 @@ printf "\n\n"
 fi
 printf "\n"
 
-# create default .env file for home automation tools, this file will be used in docker-compose
+
+# CREATE DEFAULT .ENV FILE FOR HOME AUTOMATION TOOLS, THIS FILE WILL BE USED IN DOCKER-COMPOSE
 if [ ! -f "${home_automation_tools_dir}/.env" ]; 
 then
 cat << EOF > ${home_automation_tools_dir}/.env
@@ -98,14 +101,17 @@ PLEX_CLAIMTOKEN=
 EOF
 fi
 
-# ask variables - mysql user
+
+# ASK USER FOR VARIABLES:
+# MYSQL USER
 if grep -qFx "MYSQL_USER=" ${home_automation_tools_dir}/.env
 then
 printf "${color_green}enter a MYSQL USER:${color_no}"
 read mysql_user
 sudo sed -i "s/MYSQL_USER=/MYSQL_USER=$mysql_user/" ${home_automation_tools_dir}/.env
 fi
-# ask variables - mysql root password
+
+# MYSQL ROOT PASSWORD
 if grep -qFx "MYSQL_ROOT_PASSWORD=" ${home_automation_tools_dir}/.env
 then
 printf "${color_green}enter a MYSQL_ROOT_PASSWORD:${color_no}"
@@ -113,7 +119,8 @@ read -s mysql_root_password
 sudo sed -i "s/MYSQL_ROOT_PASSWORD=/MYSQL_ROOT_PASSWORD=$mysql_root_password/" ${home_automation_tools_dir}/.env
 printf "\n"
 fi
-# ask variables - mysql password
+
+# MYSQL PASSWORD
 if grep -qFx "MYSQL_PASSWORD=" ${home_automation_tools_dir}/.env
 then
 printf "${color_green}enter a MYSQL_PASSWORD:${color_no}"
@@ -121,14 +128,16 @@ read -s mysql_password
 sudo sed -i "s/MYSQL_PASSWORD=/MYSQL_PASSWORD=$mysql_password/" ${home_automation_tools_dir}/.env
 printf "\n"
 fi
-# ask variables - mysql database
+
+# MYSQL DATABASE
 if grep -qFx "MYSQL_DATABASE=" ${home_automation_tools_dir}/.env
 then
 printf "${color_green}enter a name for the Home Assistant MYSQL_DATABASE:${color_no}"
 read mysql_database
 sudo sed -i "s/DATABASE=/DATABASE=$mysql_database/" ${home_automation_tools_dir}/.env
 fi
-# ask variables - plex claim token
+
+# PLEX CLAIM TOKEN
 if grep -qFx "PLEX_CLAIMTOKEN=" ${home_automation_tools_dir}/.env
 then
 printf "${color_green}Enter your Plex Claimtoken, you can obtain a claim token to login your server to your plex account by visiting https://www.plex.tv/claim ${color_no}"
@@ -138,64 +147,71 @@ sudo sed -i "s/PLEX_CLAIMTOKEN=/PLEX_CLAIMTOKEN=$plex_claimtoken/" ${home_automa
 printf "\n"
 fi
 
-# check if docker is installed
+
+# CHECK IF DOCKER IS INSTALLED
 docker --version 2>&1 >/dev/null
 if [ $? -ne 0 ]
 then
-# download and install docker
+# IF NOT, DOWNLOAD AND INSTALL DOCKER
 printf "${color_green}Install docker\n\n${color_no}"
 sleep ${sleepseconds}./
 sudo apt install docker.io -y
-# launch docker
+# START/ENABLE DOCKER
 sudo systemctl enable --now docker
-# set user prevlileges
+# SET USER PREVLILEGES
 sudo groupadd docker
 sudo usermod -aG docker ${USER}
 su ${USER}
-# check docker version
+# CHECK DOCKER VERSION
 docker --version
 else
+# IF DOCKER ALREADY IS INSTALLED SHOW DOCKER VERSION
 dockerversion=$(docker --version)
 printf "${color_green}${dockerversion} is installed\n\n${color_no}"
 fi
 
-# check if docker-compose is installad
+
+# CHECK IF DOCKER-COMPOSE IS INSTALLED
 docker-compose --version 2>&1 >/dev/null
 if [ $? -ne 0 ]
 then
-# install docker-compose
+# IF NOT, DOWNLOAD AND INSTALL DOCKER-COMPOSE
 printf "${color_green}Installing Docker Compose\n\n${color_no}"
 sleep ${sleepseconds}
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+# SHOW DOCKER-COMPOSE VERSION
 docker-compose --version
 else
 dockercomposeversion=$(docker-compose --version)
 printf "${color_green}${dockercomposeversion} is installed\n\n${color_no}"
 fi
 
-# build and start up portainer docker container
+
+# BUILD PORTAINER IMAGE AND START THE CONTAINER
 cd ${home_automation_tools_dir} \
 && docker-compose -f docker-compose-portainer.yml up -d 
-    if [ $? -ne 0 ]
-    then
-    printf "${color_green}failed to bring up Portainer\n\n${color_no}"
-    exit 1
-    else
-    printf "${color_green}Portainer succefully running, you can visit it at http://${ip4}:9000\n\n${color_no}"
-    fi
+if [ $? -ne 0 ]
+then
+printf "${color_green}failed to bring up Portainer\n\n${color_no}"
+exit 1
+else
+printf "${color_green}Portainer succefully running, you can visit it at http://${ip4}:9000\n\n${color_no}"
+fi
 
-# build home assistant image
+
+# BUILD HOME ASSISTANT IMAGE
 printf "${color_green}Building custom Home Assistant image\n\n${color_no}"
 sleep ${sleepseconds}
-# go into home-assistant-config repository directory
+# GO INTO HOME-ASSISTANT-CONFIG REPOSITORY DIRECTORY
 cd ${home_assistant_config_dir}
-# build docker image
+# BUILD DOCKER IMAGE
 docker build -t prd-home-assistant .
-# back to base dir
+# BACK TO BASE DIR
 cd ${base_dir}
 
-# create empty secrets.yaml for home assistant if not exists
+
+# CREATE EMPTY SECRETS.YAML FOR HOME ASSISTANT IF NOT EXISTS
 if [ ! -f "${home_assistant_config_dir}/config/secrets.yaml" ] 
 then
 cat << EOF > ${home_assistant_config_dir}/config/secrets.yaml
@@ -209,7 +225,8 @@ EOF
     fi
 fi
 
-# build db_url secret
+
+# BUILD DB_URL SECRET
 if [ -f "${home_assistant_config_dir}/config/secrets.yaml" ] \
 && grep -qFx "db_url: empty" ${home_assistant_config_dir}/config/secrets.yaml
 then
