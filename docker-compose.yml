@@ -21,7 +21,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     volumes:
-      - ./home-assistant/config:/config
+      - ${HOME}/docker/home-automation-homeassistant-config/config:/config
     environment:
       TZ: Europe/Amsterdam
       LETSENCRYPT_HOST: homeassistant.theautomation.nl
