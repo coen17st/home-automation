@@ -166,3 +166,5 @@ networks:
   home-automation:
     name: home-automation
     driver: bridge
+    config:
+    - subnet: 172.10.0.0/16
