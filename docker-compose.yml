@@ -29,10 +29,11 @@ services:
     ports:
       - 8123:8123
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.2
     healthcheck:
-      test: wget http://homeassistant:8123 --no-check-certificate -q -O - > /dev/null 2>&1
-      interval: 1m30s
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 1m
       timeout: 10s
       retries: 3
 
@@ -51,7 +52,8 @@ services:
     ports:
       - 3306:3306
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.3
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
@@ -66,7 +68,8 @@ services:
     ports:
       - 8080:8080
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.4
     healthcheck:
       test: wget http://adminer:8080 --no-check-certificate -q -O - > /dev/null 2>&1
       interval: 1m30s
@@ -85,9 +88,9 @@ services:
       - prd-mosquitto_data:/mosquitto/data
     ports:
       - 1883:1883
-      - 9001:9001
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.5
 
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -104,7 +107,8 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - prd-nginx_data:/etc/nginx/dhparam
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.6
  
   ssl-generator:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -118,6 +122,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - home-automation
+
 
   plex:
     image: plexinc/pms-docker
@@ -137,7 +142,8 @@ services:
       - 32413:32413/udp
       - 32414:32414/udp
     networks:
-      - home-automation
+      home-automation:
+        ipv4_address: 172.20.0.8
     volumes:
       - ./plex/database:/config
       - ./plex/transcode/temp:/transcode
@@ -162,9 +168,9 @@ volumes:
 
 # NETWORKS
 networks:
-
   home-automation:
-    name: home-automation
     driver: bridge
-    config:
-    - subnet: 172.10.0.0/16
+    name: home-automation
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
