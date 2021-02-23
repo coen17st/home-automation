@@ -26,11 +26,7 @@ services:
       TZ: Europe/Amsterdam
       LETSENCRYPT_HOST: homeassistant.theautomation.nl
       VIRTUAL_HOST: homeassistant.theautomation.nl
-    ports:
-      - 8123:8123
-    networks:
-      home-automation:
-        ipv4_address: 172.20.0.2
+    network_mode: host
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8123"]
       interval: 1m
