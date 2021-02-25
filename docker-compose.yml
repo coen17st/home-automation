@@ -87,6 +87,8 @@ services:
     networks:
       home-automation:
         ipv4_address: 172.20.0.5
+    #command: >
+    #      sh -c "mosquitto_passwd -U /mosquitto/config/passwordfile"
 
   nginx-proxy:
     image: jwilder/nginx-proxy
