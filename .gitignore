@@ -9,6 +9,7 @@
 !*.txt
 !*.sh
 !Dockerfile
+!README.md
 
 !/omada-controller/**
 
