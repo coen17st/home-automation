@@ -9,6 +9,8 @@ services:
     ports:
       - 9000:9000
       - 8000:8000
+    networks:
+      home-automation:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - prd-portainer_data:/data
@@ -22,6 +24,7 @@ services:
     restart: unless-stopped
     volumes:
       - ../home-automation-homeassistant-config/config:/config
+      - /home/coen/docker/nginx-certbot/data/certbot/conf:/etc/letsencrypt
     environment:
       TZ: Europe/Amsterdam
       LETSENCRYPT_HOST: homeassistant.theautomation.nl
@@ -90,38 +93,6 @@ services:
     #command: >
     #      sh -c "mosquitto_passwd -U /mosquitto/config/passwordfile"
 
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: prd-nginx-proxy
-    restart: unless-stopped
-    environment:
-      TZ: Europe/Amsterdam
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx-proxy/etc/nginx/vhost.d:/etc/nginx/vhost.d
-      - ./nginx-proxy/etc/nginx/certs:/etc/nginx/certs
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - prd-nginx_data:/etc/nginx/dhparam
-    networks:
-      home-automation:
-        ipv4_address: 172.20.0.6
- 
-  ssl-generator:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: prd-ssl-generator
-    restart: unless-stopped
-    environment:
-      TZ: Europe/Amsterdam
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - home-automation
-
-
   plex:
     image: plexinc/pms-docker
     container_name: prd-plex
@@ -159,10 +130,6 @@ volumes:
   
   prd-mosquitto_data:
     name: prd-mosquitto_data
-  
-  prd-nginx_data:
-    name: prd-nginx_data
-
 
 # NETWORKS
 networks:
